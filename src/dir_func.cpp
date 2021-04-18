@@ -10,9 +10,9 @@
 #include <fstream>
 #include <iostream>
 
-#include "./include/dir_func.hpp"
+#include "../include/dir_func.hpp"
 
-#include "./include/string_helper.hpp"
+#include "../include/string_helper.hpp"
 
 
 cv::Mat

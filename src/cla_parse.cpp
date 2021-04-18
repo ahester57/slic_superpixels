@@ -4,7 +4,7 @@
 
 #include <opencv2/core/core.hpp>
 
-#include "./include/cla_parse.hpp"
+#include "../include/cla_parse.hpp"
 
 
 // parse command line arguments

@@ -7,20 +7,20 @@
 
 #include <iostream>
 
-#include "./include/slic_helper.hpp"
+#include "../include/slic_helper.hpp"
 
-#include "./include/affine.hpp"
-#include "./include/bitwise_porter_duff_ops.hpp"
-#include "./include/canny.hpp"
-#include "./include/rectangle.hpp"
-#include "./include/region_of_interest.hpp"
-#include "./include/segmentation.hpp"
+#include "../include/affine.hpp"
+#include "../include/bitwise_porter_duff_ops.hpp"
+#include "../include/canny.hpp"
+#include "../include/rectangle.hpp"
+#include "../include/region_of_interest.hpp"
+#include "../include/segmentation.hpp"
 
 #define DEBUG 1
 
 #if DEBUG
     #include <opencv2/highgui/highgui.hpp>
-    #include "./include/string_helper.hpp"
+    #include "../include/string_helper.hpp"
 #endif
 
 
@@ -129,7 +129,7 @@ paint_map_atop_region(SLICData* image_data, int marker_value, cv::Mat drawn_cont
 {
     // create single channel mask
     cv::Mat map_mask_8u;
-    image_data->input_image.convertTo( map_mask_8u, CV_8U );
+    image_data->input_mask.convertTo( map_mask_8u, CV_8U );
 
     // create 3 channel contour
     cv::Mat contour_8u3;
@@ -171,7 +171,7 @@ paint_region_over_map(SLICData* image_data, cv::Rect bounding_rect)
 {
     // create single channel mask
     cv::Mat map_mask_8u;
-    image_data->input_image.convertTo( map_mask_8u, CV_8U );
+    image_data->input_mask.convertTo( map_mask_8u, CV_8U );
 
     // create 3 channel roi mask
     cv::Mat roi_8u;

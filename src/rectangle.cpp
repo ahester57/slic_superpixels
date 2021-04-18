@@ -5,7 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "./include/rectangle.hpp"
+#include "../include/rectangle.hpp"
 
 
 // double size of rect of and place at center

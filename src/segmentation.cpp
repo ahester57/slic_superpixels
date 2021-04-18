@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "./include/segmentation.hpp"
+#include "../include/segmentation.hpp"
 
 #define DEBUG 0
 

@@ -6,9 +6,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "./include/mouse_callback.hpp"
+#include "../include/mouse_callback.hpp"
 
-#include "./include/dir_func.hpp"
+#include "../include/dir_func.hpp"
 
 #define DEBUG 1
 

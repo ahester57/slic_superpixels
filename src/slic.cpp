@@ -8,15 +8,15 @@
 
 #include <vector>
 
-#include "./include/affine.hpp"
-#include "./include/canny.hpp"
-#include "./include/cla_parse.hpp"
-#include "./include/dir_func.hpp"
-#include "./include/equalize.hpp"
-#include "./include/mouse_callback.hpp"
-#include "./include/rectangle.hpp"
-#include "./include/segmentation.hpp"
-#include "./include/slic_helper.hpp"
+#include "../include/affine.hpp"
+#include "../include/canny.hpp"
+#include "../include/cla_parse.hpp"
+#include "../include/dir_func.hpp"
+#include "../include/equalize.hpp"
+#include "../include/mouse_callback.hpp"
+#include "../include/rectangle.hpp"
+#include "../include/segmentation.hpp"
+#include "../include/slic_helper.hpp"
 
 #define DEBUG 0
 

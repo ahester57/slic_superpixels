@@ -5,7 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "./include/region_of_interest.hpp"
+#include "../include/region_of_interest.hpp"
 
 
 // extract ROI ignoring out of bounds

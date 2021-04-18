@@ -5,7 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "./include/hsv_convert.hpp"
+#include "../include/hsv_convert.hpp"
 
 
 // convert a BGR image to HSV

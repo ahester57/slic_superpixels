@@ -4,7 +4,7 @@
 
 #include <opencv2/core/core.hpp>
 
-#include "./include/bitwise_porter_duff_ops.hpp"
+#include "../include/bitwise_porter_duff_ops.hpp"
 
 
 // Ir = 0
