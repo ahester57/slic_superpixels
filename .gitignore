@@ -1,0 +1,13 @@
+.vs/
+Debug/
+x64/
+*.vcxproj
+*.vcxproj.*
+.vscode/*
+*.sln
+*.exe
+*.o
+*.gch
+.vscode/settings.json
+#images/
+out/
