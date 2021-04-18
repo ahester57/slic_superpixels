@@ -28,6 +28,8 @@
 void
 segment(SLICData* image_data, int hsv_plane)
 {
+    //TODO replace this with SLIC segmentation
+
     // canny edge detection, returning contour map
     cv::Mat canny_edges = draw_color_canny_contours( image_data->input_image, hsv_plane ); // for usa.png, saturation is best to use imo
 
@@ -55,7 +57,7 @@ segment(SLICData* image_data, int hsv_plane)
 #if DEBUG > 1
     cv::Mat markers_8U;
     image_data->markers.convertTo( markers_8U, CV_8U );
-    cv::bitwise_and( markers_8U, image_data->map_mask, markers_8U );
+    cv::bitwise_and( markers_8U, image_data->input_mask, markers_8U );
     cv::imshow( "Markers 8U", markers_8U );
     markers_8U.release();
 #endif
@@ -68,6 +70,7 @@ segment(SLICData* image_data, int hsv_plane)
 
 }
 
+// select a region. called from mouse listener
 void
 select_region(SLICData* image_data, int marker_value)
 {

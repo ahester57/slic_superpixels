@@ -21,7 +21,7 @@
 #define DEBUG 0
 
 
-const std::string WINDOW_NAME = "Map Segmentation";
+const std::string WINDOW_NAME = "SLIC Superpixels";
 
 
 // event loop
