@@ -4,6 +4,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/ximgproc/slic.hpp>
 
 #include <iostream>
 
@@ -29,6 +30,8 @@ void
 segment(SLICData* image_data, int hsv_plane)
 {
     //TODO replace this with SLIC segmentation
+    cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
+    superpixels = cv::ximgproc::createSuperpixelSLIC( image_data->input_image, 101, 10, 10.f );
 
     // canny edge detection, returning contour map
     cv::Mat canny_edges = draw_color_canny_contours( image_data->input_image, hsv_plane ); // for usa.png, saturation is best to use imo

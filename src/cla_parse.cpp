@@ -31,7 +31,7 @@ parse_arguments(
         "{ruler r         |10.f  | Chooses the enforcement of superpixel smoothness}"
         "{help h          |      | Show Help Message}";
 
-    cv::CommandLineParser parser(argc, argv, keys);
+    cv::CommandLineParser parser =  cv::CommandLineParser(argc, argv, keys);
 
     if (parser.has("h")) {
         parser.printMessage();

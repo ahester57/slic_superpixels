@@ -8,16 +8,21 @@ TARGETDIR=bin
 # VIDEO := 1
 
 # OpenCV directories
-IOPENCV=C:/dev/OpenCV-MinGW-Build-OpenCV-4.1.1-x64/include
-LOPENCV=C:/dev/OpenCV-MinGW-Build-OpenCV-4.1.1-x64/x64/mingw/bin
-LDLIBS= -llibopencv_core411 -llibopencv_highgui411 -llibopencv_imgcodecs411 -llibopencv_imgproc411
+IOPENCV=T:/dev/opencv/include
+LOPENCV=T:/dev/opencv/x64/mingw/bin
+OPENCV_LIBS= -llibopencv_world452# -llibopencv_highgui452 -llibopencv_imgcodecs452 -llibopencv_imgproc452
 ifdef VIDEO
-	LDLIBS += -llibopencv_video411
+	OPENCV_LIBS += -llibopencv_video452
 endif
+OPENCV_CFLAGS = -I $(IOPENCV) -L $(LOPENCV) $(OPENCV_LIBS)
 
 # Compiler options
-CC=g++
-CFLAGS=-Wall -g -I $(INCDIR) -I $(IOPENCV) -L $(LOPENCV) $(LDLIBS)
+# g++.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0
+#CC=g++
+CC=C:/mingw64/bin/g++
+CFLAGS=-Wall -g
+CFLAGS+= -I $(INCDIR)
+CFLAGS+= $(OPENCV_CFLAGS)
 #DEPS = $(wildcard $(INCDIR)/*.hpp)
 SOURCES= $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS = $(patsubst $(SRCDIR)/%.cpp, %.o, $(SOURCES))
