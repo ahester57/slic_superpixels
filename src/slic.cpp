@@ -98,7 +98,7 @@ process_slic_data(SLICData* image_data)
 {
     // segment the image by intensity
     superpixel( image_data );
-    // segment( image_data, 2 );
+    image_data->input_mask.copyTo( image_data->marked_up_image );
 }
 
 // apply input filters, show, save, and initialize mouse callback
