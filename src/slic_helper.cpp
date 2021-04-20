@@ -25,9 +25,8 @@
 #endif
 
 
-// perform segmentation using canny edges, thresholding, and distance transform
 void
-segment(SLICData* image_data, int hsv_plane)
+superpixel(SLICData* image_data, int algorithm, int region_size, float ruler)
 {
     // blur
     cv::Mat blurred_image;
@@ -36,24 +35,32 @@ segment(SLICData* image_data, int hsv_plane)
     //TODO replace this with SLIC segmentation
     cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
     superpixels = cv::ximgproc::createSuperpixelSLIC(
-        image_data->input_image,
-        cv::ximgproc::SLIC,
-        10,
-        50.f
+        blurred_image,
+        algorithm,
+        region_size,
+        ruler
     );
+    blurred_image.release();
 
     // generate the segments
     superpixels.get()->iterate(10);
 
     superpixels.get()->enforceLabelConnectivity( 40 );
 
-#if DEBUG
     cv::Mat label_contour_mask;
     superpixels.get()->getLabelContourMask( label_contour_mask );
+#if DEBUG
     cv::imshow( "label contours", label_contour_mask );
     cv::waitKey(0);
-    label_contour_mask.release();
 #endif
+    label_contour_mask.copyTo( image_data->input_mask );
+    label_contour_mask.release();
+}
+
+// perform segmentation using canny edges, thresholding, and distance transform
+void
+segment(SLICData* image_data, int hsv_plane)
+{
 
     // canny edge detection, returning contour map
     cv::Mat canny_edges = draw_color_canny_contours( image_data->input_image, hsv_plane ); // for usa.png, saturation is best to use imo
@@ -77,8 +84,7 @@ segment(SLICData* image_data, int hsv_plane)
     distance_transform.release();
 
     // apply watershed algorithm
-    cv::watershed( blurred_image, image_data->markers );
-    blurred_image.release();
+    cv::watershed( image_data->input_image, image_data->markers );
 
 #if DEBUG > 1
     cv::Mat markers_8U;

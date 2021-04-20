@@ -22,6 +22,8 @@ typedef struct {
 } SLICData;
 
 
+void superpixel(SLICData* image_data, int algorithm, int region_size, float ruler);
+
 void segment(SLICData* map_data, int hsv_plane = 2);
 
 void select_region(SLICData* map_data, int marker_value);

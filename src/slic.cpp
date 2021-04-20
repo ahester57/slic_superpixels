@@ -5,6 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/ximgproc/slic.hpp>
 
 #include <vector>
 
@@ -84,10 +85,15 @@ initialize_slic_data(
 
 // apply segmentation
 void
-process_slic_data(SLICData* image_data)
+process_slic_data(SLICData* image_data, int region_size, float ruler)
 {
     // segment the image by intensity
-    segment( image_data, 2 );
+    superpixel(
+        image_data,
+        cv::ximgproc::MSLIC,
+        region_size,
+        ruler
+    );
 }
 
 // apply input filters, show, save, and initialize mouse callback
@@ -152,7 +158,7 @@ main(int argc, const char** argv)
     );
 
     // apply segmentation
-    process_slic_data( &image_data );
+    process_slic_data( &image_data, region_size, ruler );
 
     // post-process slic data
     post_processing(
