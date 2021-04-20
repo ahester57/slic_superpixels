@@ -91,7 +91,7 @@ parse_arguments(
 
     try {
         *region_size = parser.get<int>("s");
-        assert( *region_size >= 0 && *region_size <= 400 );
+        assert( *region_size > 0 && *region_size <= 400 );
     } catch (...) {
         std::cerr << "Failed to parse region_size argument!:" << std::endl;
         return -1;

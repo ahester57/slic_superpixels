@@ -18,11 +18,13 @@
 #include "../include/region_of_interest.hpp"
 #include "../include/segmentation.hpp"
 
-#define DEBUG 1
+#define DEBUG 2
 
 #if DEBUG
     #include <opencv2/highgui/highgui.hpp>
     #include <ctime>
+
+    #include "../include/dir_func.hpp"
     #include "../include/string_helper.hpp"
 #endif
 
@@ -58,8 +60,17 @@ superpixel(SLICData* image_data)
 
 #if DEBUG
     clock_end = std::clock();
-    std::printf( "Time elapsed: %f (ms)", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
-    cv::imshow( "label contours", image_data->marked_up_image );
+    std::printf( "\nSuperpixel Time Elapsed: %f (ms)\n", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
+    char metadata[50];
+    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.jpg",
+        image_data->algorithm,
+        image_data->region_size,
+        image_data->ruler,
+        image_data->connectivity
+    );
+    std::printf( "%s\n", metadata );
+    cv::imshow( "SLIC Label Contours", image_data->marked_up_image );
+    write_img_to_file( image_data->marked_up_image, "./out/slic", metadata );
     cv::waitKey(0);
 #endif
 
@@ -84,6 +95,10 @@ slic_string_to_int(std::string algorithm_string)
 void
 segment(SLICData* image_data, int hsv_plane)
 {
+#if DEBUG
+    std::clock_t clock_begin, clock_end;
+    clock_begin = std::clock();
+#endif
     // canny edge detection, returning contour map
     cv::Mat canny_edges = draw_color_canny_contours( image_data->input_image, hsv_plane ); // for usa.png, saturation is best to use imo
 
@@ -108,19 +123,34 @@ segment(SLICData* image_data, int hsv_plane)
     // apply watershed algorithm
     cv::watershed( image_data->input_image, image_data->markers );
 
-#if DEBUG > 1
-    cv::Mat markers_8U;
-    image_data->markers.convertTo( markers_8U, CV_8U );
-    cv::bitwise_and( markers_8U, image_data->input_mask, markers_8U );
-    cv::imshow( "Markers 8U", markers_8U );
-    markers_8U.release();
-#endif
-
     // create new marked_up_image (the one we click on)
     image_data->marked_up_image = cv::Mat::zeros( image_data->markers.size(), CV_8UC3 );
 
     // draw original map back on
     draw_in_states( image_data );
+
+#if DEBUG
+    clock_end = std::clock();
+    std::printf( "\nWatershed Time Elapsed: %f (ms)\n", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
+
+    cv::Mat markers_8U;
+    image_data->markers.convertTo( markers_8U, CV_8U );
+    cv::bitwise_and( markers_8U, image_data->input_mask, markers_8U );
+
+    char metadata[50];
+    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.jpg",
+        image_data->algorithm,
+        image_data->region_size,
+        image_data->ruler,
+        image_data->connectivity
+    );
+    std::printf( "%s\n", metadata );
+    cv::imshow( "Markers 8U", markers_8U );
+    write_img_to_file( markers_8U, "./out/markers", metadata );
+    cv::waitKey(0);
+    markers_8U.release();
+#endif
+
 }
 
 // select a region. called from mouse listener

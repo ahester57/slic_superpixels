@@ -36,7 +36,7 @@ make_background_mask(cv::Mat image)
 std::vector<std::vector<cv::Point>>
 find_distance_contours(cv::Mat distance_transform)
 {
-    cv::threshold( distance_transform, distance_transform, 0.01f, 1.f, cv::THRESH_BINARY );
+    cv::threshold( distance_transform, distance_transform, 0.03f, 1.f, cv::THRESH_BINARY );
 
     cv::Mat distance_8U;
     distance_transform.convertTo( distance_8U, CV_8U );

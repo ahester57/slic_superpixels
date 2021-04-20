@@ -29,7 +29,7 @@ draw_canny_contours(cv::Mat image)
     // draw the contours
     cv::Mat canvas = cv::Mat::zeros( canny_output.size(), CV_8U );
     for (size_t i = 0; i < contours.size(); i++) {
-        cv::drawContours( canvas, contours, i, cv::Scalar(255), 1, cv::LINE_8, hierarchy, 0 );
+        cv::drawContours( canvas, contours, i, cv::Scalar(255), 1, cv::LINE_8, hierarchy, 2 );
     }
 
     canny_output.release();
