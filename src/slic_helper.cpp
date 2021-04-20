@@ -290,12 +290,12 @@ make_border_from_size_and_rect(cv::Mat image, cv::Size target_size, cv::Rect rec
     if (top < 0 && bottom >= 0) {
         bottom -= top;
     } else if (top >= 0 && bottom < 0) {
-        top += bottom;
+        top -= bottom;
     }
     if (bottom < 0 && top >= 0) {
         top -= bottom;
     } else if (bottom >= 0 && top < 0) {
-        bottom += top;
+        bottom -= top;
     }
 
     // seems to be necessary to avoid weird stuff from happening on the sides
@@ -304,12 +304,12 @@ make_border_from_size_and_rect(cv::Mat image, cv::Size target_size, cv::Rect rec
     if (left < 0 && right >= 0) {
         right -= left;
     } else if (left >= 0 && right < 0) {
-        left += right;
+        left -= right;
     }
     if (right < 0 && left >= 0) {
         left -= right;
     } else if (right >= 0 && left < 0) {
-        right += left;
+        right -= left;
     }
 
 #if DEBUG

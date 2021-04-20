@@ -24,8 +24,7 @@ make_right_triangle(float a, float b)
 cv::Mat
 resize_affine(cv::Mat src, float scale)
 {
-    // if we have more than 8k in the future, then my only question is why? what's the point?
-    assert( src.rows * scale <= 7680 && src.cols * scale <= 7680 );
+    assert( src.rows * scale <= 3840 && src.cols * scale <= 3840 );
 
     // save these to a variable so we can delete them later, thanks C
     cv::Point2f* src_points = make_right_triangle( src.cols - 1.f, src.rows - 1.f );
