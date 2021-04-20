@@ -19,31 +19,33 @@ parse_arguments(
     bool* equalize_output,
     int* region_size,
     float* ruler,
-    std::string* algorithm
+    std::string* algorithm,
+    int* connectivity
 ) {
     cv::String keys =
         "{@input_image    |<none>| Input Image}"
         "{@output_image   |<none>| Output Image}"
         // "{grayscale g     |      | Read Input As Grayscale}"
         "{scale sc        |1.f   | Scale Input Image Size using Affine Transform}"
-        "{equalize e      |      | Equalize Output Image}"
-        "{blur b          |      | Blur Output Image}"
-        // "{hsv_plane p     |2     | HSV Plane to Use: 0 = H, 1 = S, 2 = V}"
+        // "{equalize e      |      | Equalize Output Image}"
+        // "{blur b          |      | Blur Output Image}"
         "{algorithm a     |SLIC  | Name of SLIC algorithm variant\n\t\t\tSLIC segments image using a desired region size\n\t\t\tSLICO optimizes using an adaptive compactness factor\n\t\t\tMSLIC optimizes using manifold methods giving more context-sensitive superpixels}"
         "{region_size s   |10    | Chooses an average superpixel size measured in pixels}"
         "{ruler r         |10.f  | Chooses the enforcement of superpixel smoothness}"
+        "{connectivity c  |25    | The minimum element size in percents that should be absorbed into a bigger superpixel}"
         "{help h          |      | Show Help Message}";
 
     cv::CommandLineParser parser =  cv::CommandLineParser(argc, argv, keys);
 
+    parser.printMessage();
+
     if (parser.has("h")) {
-        parser.printMessage();
+        parser.about("About.");
         return 0;
     }
 
     if (!parser.check()) {
         parser.printErrors();
-        parser.printMessage();
         return -1;
     }
 
@@ -73,19 +75,19 @@ parse_arguments(
         return -1;
     }
 
-    try {
-        *blur_output = parser.has("b");
-    } catch (...) {
-        std::cerr << "Failed to parse blur argument!:" << std::endl;
-        return -1;
-    }
+    // try {
+    //     *blur_output = parser.has("b");
+    // } catch (...) {
+    //     std::cerr << "Failed to parse blur argument!:" << std::endl;
+    //     return -1;
+    // }
 
-    try {
-        *equalize_output = parser.has("e");
-    } catch (...) {
-        std::cerr << "Failed to parse equalize argument!:" << std::endl;
-        return -1;
-    }
+    // try {
+    //     *equalize_output = parser.has("e");
+    // } catch (...) {
+    //     std::cerr << "Failed to parse equalize argument!:" << std::endl;
+    //     return -1;
+    // }
 
     try {
         *region_size = parser.get<int>("s");
@@ -108,6 +110,14 @@ parse_arguments(
         assert( algorithm->size() > 0 );
     } catch (...) {
         std::cerr << "Failed to parse algorithm argument!:" << std::endl;
+        return -1;
+    }
+
+    try {
+        *connectivity = parser.get<int>("c");
+        assert( *connectivity >= 0 && *connectivity <= 100 );
+    } catch (...) {
+        std::cerr << "Failed to parse connectivity argument!:" << std::endl;
         return -1;
     }
 

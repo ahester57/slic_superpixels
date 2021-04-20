@@ -22,6 +22,7 @@
 
 #if DEBUG
     #include <opencv2/highgui/highgui.hpp>
+    #include <ctime>
     #include "../include/string_helper.hpp"
 #endif
 
@@ -29,9 +30,13 @@
 void
 superpixel(SLICData* image_data)
 {
+#if DEBUG
+    std::clock_t clock_begin, clock_end;
+    clock_begin = std::clock();
+#endif
     // blur
     cv::Mat blurred_image;
-    cv::GaussianBlur( image_data->input_image, blurred_image, cv::Size( 3, 3 ), 0.5f );
+    cv::GaussianBlur( image_data->input_image, blurred_image, cv::Size( 5, 5 ), 0.5f );
 
     //TODO replace this with SLIC segmentation
     cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
@@ -46,12 +51,14 @@ superpixel(SLICData* image_data)
     // generate the segments
     superpixels.get()->iterate(10);
 
-    superpixels.get()->enforceLabelConnectivity( 40 );
+    superpixels.get()->enforceLabelConnectivity( image_data->connectivity );
 
     superpixels.get()->getLabelContourMask( image_data->marked_up_image );
     superpixels.release();
 
 #if DEBUG
+    clock_end = std::clock();
+    std::printf( "Time elapsed: %f (ms)", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
     cv::imshow( "label contours", image_data->marked_up_image );
     cv::waitKey(0);
 #endif

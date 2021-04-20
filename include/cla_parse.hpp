@@ -17,7 +17,8 @@ int parse_arguments(
     bool* equalize_output,
     int* region_size,
     float* ruler,
-    std::string* algorithm
+    std::string* algorithm,
+    int* connectivity
 );
 
 #endif

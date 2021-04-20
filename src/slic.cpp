@@ -45,7 +45,8 @@ initialize_slic_data(
     bool pad_input,
     std::string algorithm_string,
     int region_size,
-    float ruler
+    float ruler,
+    int connectivity
 ) {
     cv::Mat input_image = open_image( input_image_filename );
 
@@ -86,6 +87,7 @@ initialize_slic_data(
     image_data.algorithm = slic_string_to_int( algorithm_string );
     image_data.region_size = region_size;
     image_data.ruler = ruler;
+    image_data.connectivity = connectivity;
 
     return image_data;
 }
@@ -132,14 +134,15 @@ main(int argc, const char** argv)
     // CLA variables
     std::string input_image_filename;
     std::string output_image_filename;
-    int region_size;
-    float ruler;
-    std::string algorithm_string;
+    int region_size = 10;
+    float ruler = 10.f;
+    std::string algorithm_string = "SLIC";
+    int connectivity = 25;
 
     // CLA flags
-    float scale_image_value;
-    bool blur_output;
-    bool equalize_output;
+    float scale_image_value = 1.f;
+    bool blur_output = false;
+    bool equalize_output = false;
     bool pad_input = false;
 
     // parse and save command line args
@@ -152,7 +155,8 @@ main(int argc, const char** argv)
         &equalize_output,
         &region_size,
         &ruler,
-        &algorithm_string
+        &algorithm_string,
+        &connectivity
     );
     if (parse_result != 1) return parse_result;
 
@@ -164,7 +168,8 @@ main(int argc, const char** argv)
         pad_input,
         algorithm_string,
         region_size,
-        ruler
+        ruler,
+        connectivity
     );
 
     // apply segmentation

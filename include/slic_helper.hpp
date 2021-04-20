@@ -22,6 +22,7 @@ typedef struct {
     int algorithm;
     int region_size;
     float ruler;
+    int connectivity;
 } SLICData;
 
 
