@@ -52,15 +52,20 @@ superpixel(SLICData* image_data)
 
     // generate the segments
     superpixels.get()->iterate(10);
-
+    // level of connectivity
     superpixels.get()->enforceLabelConnectivity( image_data->connectivity );
-
-    superpixels.get()->getLabelContourMask( image_data->marked_up_image );
+    // label contours
+    superpixels.get()->getLabelContourMask( image_data->input_mask );
+    // labels
+    superpixels.get()->getLabels( image_data->markers );
+    // num superpixels
+    image_data->num_superpixels = superpixels.get()->getNumberOfSuperpixels();
     superpixels.release();
 
 #if DEBUG
     clock_end = std::clock();
     std::printf( "\nSuperpixel Time Elapsed: %f (ms)\n", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
+
     char metadata[50];
     std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.jpg",
         image_data->algorithm,
@@ -69,11 +74,18 @@ superpixel(SLICData* image_data)
         image_data->connectivity
     );
     std::printf( "%s\n", metadata );
-    cv::imshow( "SLIC Label Contours", image_data->marked_up_image );
-    write_img_to_file( image_data->marked_up_image, "./out/slic", metadata );
+
+    cv::Mat labels;
+    image_data->markers.convertTo( labels, CV_32FC3, (float)1/image_data->num_superpixels );
+    cv::imshow( "SLIC Label Markers", labels );
+    write_img_to_file( image_data->markers, "./out/slic_markers", metadata );
+    labels.release();
+
+    cv::imshow( "SLIC Label Contours", image_data->input_mask );
+    write_img_to_file( image_data->input_mask, "./out/slic_contours", metadata );
     cv::waitKey(0);
 #endif
-
+    image_data->input_mask.copyTo( image_data->marked_up_image );
 }
 
 // convert given motion type to enum int
@@ -127,7 +139,7 @@ segment(SLICData* image_data, int hsv_plane)
     image_data->marked_up_image = cv::Mat::zeros( image_data->markers.size(), CV_8UC3 );
 
     // draw original map back on
-    draw_in_states( image_data );
+    draw_on_original( image_data );
 
 #if DEBUG
     clock_end = std::clock();
@@ -162,29 +174,29 @@ select_region(SLICData* image_data, int marker_value)
     image_data->marked_up_image = cv::Mat::zeros( image_data->input_image.size(), image_data->input_image.type() );
 
     // draw original map back on
-    draw_in_states( image_data );
+    draw_on_original( image_data );
 
     // highlight selected region
     // draw_in_roi( image_data, marker_value );
 
     // get bounding rect
-    cv::Rect bounding_rect = image_data->boundaries[marker_value - 1];
+    // cv::Rect bounding_rect = image_data->boundaries[marker_value - 1];
 
     // extract the ROI
-    cv::Mat region_only = extract_selected_region( image_data, marker_value );
+    // cv::Mat region_only = extract_selected_region( image_data, marker_value );
 
     // double the size
-    region_only = resize_affine( region_only, 2.f );
+    // region_only = resize_affine( region_only, 2.f );
 
     // copy the region to image_data
-    region_only.copyTo( image_data->region_of_interest );
-    region_only.release();
+    // region_only.copyTo( image_data->region_of_interest );
+    // region_only.release();
 
     // double size of rect of roi
-    bounding_rect = center_and_double_rect( bounding_rect, image_data->marked_up_image.size() );
+    // bounding_rect = center_and_double_rect( bounding_rect, image_data->marked_up_image.size() );
 
     // place enlarged roi in marked up image
-    image_data->marked_up_image = paint_region_over_map( image_data, bounding_rect );
+    // image_data->marked_up_image = paint_region_over_map( image_data, bounding_rect );
 
 }
 
@@ -376,7 +388,7 @@ make_border_from_size_and_rect(cv::Mat image, cv::Size target_size, cv::Rect rec
 
 // draw original states back onto marked_up_image
 void
-draw_in_states(SLICData* image_data)
+draw_on_original(SLICData* image_data)
 {
     // create single channel mask
     cv::Mat mask_8u;
@@ -387,8 +399,12 @@ draw_in_states(SLICData* image_data)
     {
         for (int j = 0; j < image_data->markers.cols; j++)
         {
+            // skip if not in mask
+            if (mask_8u.at<uchar>( i, j ) == (uchar) 0) {
+                continue;
+            }
             int pixel = image_data->markers.at<int>( i, j );
-            if (pixel > 0 && pixel <= static_cast<int>(image_data->contours.size())) {
+            if (pixel >= 0 && pixel <= static_cast<int>(image_data->num_superpixels)) {
                 image_data->marked_up_image.at<cv::Vec3b>( i, j ) = image_data->input_image.at<cv::Vec3b>( i, j );
             }
         }

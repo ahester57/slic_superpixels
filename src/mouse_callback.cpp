@@ -31,7 +31,7 @@ mouse_callback_draw_zeros(int event, int x, int y, int d, void* userdata)
             image_data->marked_up_image = cv::Mat::zeros( image_data->input_image.size(), image_data->input_image.type() );
 
             // draw original map back on
-            draw_in_states( image_data );
+            draw_on_original( image_data );
 
             // show marked_up_image
             cv::imshow( image_data->window_name, image_data->input_image );
@@ -54,7 +54,7 @@ mouse_callback_draw_zeros(int event, int x, int y, int d, void* userdata)
             std::cout << "Marker Value:\t\t" << marker_value << std::endl;
 #endif
             // check marker exists
-            if (marker_value <= 0 || marker_value > image_data->contours.size()) {
+            if (marker_value < 0 || marker_value > image_data->num_superpixels) {
 #if DEBUG
                 std::cout << "Marker Out of Range." << std::endl;
 #endif

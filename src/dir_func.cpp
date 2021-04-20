@@ -92,9 +92,12 @@ write_img_to_file(cv::Mat image, std::string output_dir, std::string file_name)
     try {
 
         std::string dst_file = output_dir + "/" + file_name;
-        assert(create_dir_recursive(dst_file));
+        assert( create_dir_recursive( dst_file ) );
 
-        assert(cv::imwrite(dst_file, image));
+        cv::Mat image_8u;
+        image.convertTo( image_8u, CV_8U );
+
+        assert( cv::imwrite( dst_file, image ) );
 
         cv::waitKey(100);
         std::cout << "Wrote " << dst_file << std::endl;

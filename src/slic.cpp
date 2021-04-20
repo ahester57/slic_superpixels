@@ -98,7 +98,7 @@ process_slic_data(SLICData* image_data)
 {
     // segment the image by intensity
     superpixel( image_data );
-    segment( image_data, 2 );
+    // segment( image_data, 2 );
 }
 
 // apply input filters, show, save, and initialize mouse callback

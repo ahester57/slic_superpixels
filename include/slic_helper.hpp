@@ -23,6 +23,7 @@ typedef struct {
     int region_size;
     float ruler;
     int connectivity;
+    int num_superpixels;
 } SLICData;
 
 
@@ -42,7 +43,7 @@ cv::Mat paint_region_over_map(SLICData* map_data, cv::Rect bounding_rect);
 
 cv::Mat make_border_from_size_and_rect(cv::Mat image, cv::Size target_size, cv::Rect rect);
 
-void draw_in_states(SLICData* map_data);
+void draw_on_original(SLICData* map_data);
 
 void draw_in_roi(SLICData* map_data, int marker_value);
 
