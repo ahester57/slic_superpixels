@@ -31,10 +31,8 @@ Usage: slic.exe [params] input_image output_image
                         SLIC segments image using a desired region size
                         SLICO optimizes using an adaptive compactness factor
                         MSLIC optimizes using manifold methods giving more context-sensitive superpixels
-        -b, --blur
-                Blur Output Image
-        -e, --equalize
-                Equalize Output Image
+        -c, --connectivity (value:25)
+                The minimum element size in percents that should be absorbed into a bigger superpixel
         -h, --help (value:true)
                 Show Help Message
         -r, --ruler (value:10.f)

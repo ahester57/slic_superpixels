@@ -18,7 +18,7 @@
 #include "../include/region_of_interest.hpp"
 #include "../include/segmentation.hpp"
 
-#define DEBUG 2
+#define DEBUG 1
 
 #if DEBUG
     #include <opencv2/highgui/highgui.hpp>
@@ -38,9 +38,8 @@ superpixel(SLICData* image_data)
 #endif
     // blur
     cv::Mat blurred_image;
-    cv::GaussianBlur( image_data->input_image, blurred_image, cv::Size( 5, 5 ), 0.5f );
+    cv::GaussianBlur( image_data->input_image, blurred_image, cv::Size( 3, 3 ), 0.5f );
 
-    //TODO replace this with SLIC segmentation
     cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
     superpixels = cv::ximgproc::createSuperpixelSLIC(
         blurred_image,
@@ -51,7 +50,7 @@ superpixel(SLICData* image_data)
     blurred_image.release();
 
     // generate the segments
-    superpixels.get()->iterate(15);
+    superpixels.get()->iterate(5);
     // level of connectivity
     superpixels.get()->enforceLabelConnectivity( image_data->connectivity );
     // label contours
