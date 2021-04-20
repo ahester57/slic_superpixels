@@ -18,7 +18,8 @@ parse_arguments(
     bool* blur_output,
     bool* equalize_output,
     int* region_size,
-    float* ruler
+    float* ruler,
+    std::string* algorithm
 ) {
     cv::String keys =
         "{@input_image    |<none>| Input Image}"
@@ -99,6 +100,14 @@ parse_arguments(
         assert( *ruler >= 0.f && *ruler <= 100.f );
     } catch (...) {
         std::cerr << "Failed to parse ruler argument!:" << std::endl;
+        return -1;
+    }
+
+    try {
+        *algorithm = (std::string) parser.get<std::string>("a").c_str();
+        assert( algorithm->size() > 0 );
+    } catch (...) {
+        std::cerr << "Failed to parse algorithm argument!:" << std::endl;
         return -1;
     }
 

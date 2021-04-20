@@ -16,7 +16,8 @@ int parse_arguments(
     bool* blur_output,
     bool* equalize_output,
     int* region_size,
-    float* ruler
+    float* ruler,
+    std::string* algorithm
 );
 
 #endif

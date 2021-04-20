@@ -19,10 +19,15 @@ typedef struct {
     std::vector<cv::Rect> boundaries;
     cv::Mat markers;
     cv::Mat marked_up_image;
+    int algorithm;
+    int region_size;
+    float ruler;
 } SLICData;
 
 
-void superpixel(SLICData* image_data, int algorithm, int region_size, float ruler);
+void superpixel(SLICData* image_data);
+
+int slic_string_to_int(std::string algorithm_string);
 
 void segment(SLICData* map_data, int hsv_plane = 2);
 

@@ -7,6 +7,7 @@
 #include <opencv2/ximgproc/slic.hpp>
 
 #include <iostream>
+#include <map>
 
 #include "../include/slic_helper.hpp"
 
@@ -26,7 +27,7 @@
 
 
 void
-superpixel(SLICData* image_data, int algorithm, int region_size, float ruler)
+superpixel(SLICData* image_data)
 {
     // blur
     cv::Mat blurred_image;
@@ -36,9 +37,9 @@ superpixel(SLICData* image_data, int algorithm, int region_size, float ruler)
     cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
     superpixels = cv::ximgproc::createSuperpixelSLIC(
         blurred_image,
-        algorithm,
-        region_size,
-        ruler
+        image_data->algorithm,
+        image_data->region_size,
+        image_data->ruler
     );
     blurred_image.release();
 
@@ -47,21 +48,35 @@ superpixel(SLICData* image_data, int algorithm, int region_size, float ruler)
 
     superpixels.get()->enforceLabelConnectivity( 40 );
 
-    cv::Mat label_contour_mask;
-    superpixels.get()->getLabelContourMask( label_contour_mask );
+    superpixels.get()->getLabelContourMask( image_data->marked_up_image );
+    superpixels.release();
+
 #if DEBUG
-    cv::imshow( "label contours", label_contour_mask );
+    cv::imshow( "label contours", image_data->marked_up_image );
     cv::waitKey(0);
 #endif
-    label_contour_mask.copyTo( image_data->input_mask );
-    label_contour_mask.release();
+
+}
+
+// convert given motion type to enum int
+int
+slic_string_to_int(std::string algorithm_string)
+{
+    std::map<std::string, int> algorithm_string_map = {
+        { "SLIC",  cv::ximgproc::SLIC  },
+        { "SLICO", cv::ximgproc::SLICO },
+        { "MSLIC", cv::ximgproc::MSLIC }
+    };
+    int algorithm = algorithm_string_map[algorithm_string];
+    // assertion to prevent them from typing wrong and getting translation
+    assert(algorithm > 99 && algorithm < 103);
+    return algorithm;
 }
 
 // perform segmentation using canny edges, thresholding, and distance transform
 void
 segment(SLICData* image_data, int hsv_plane)
 {
-
     // canny edge detection, returning contour map
     cv::Mat canny_edges = draw_color_canny_contours( image_data->input_image, hsv_plane ); // for usa.png, saturation is best to use imo
 
@@ -99,7 +114,6 @@ segment(SLICData* image_data, int hsv_plane)
 
     // draw original map back on
     draw_in_states( image_data );
-
 }
 
 // select a region. called from mouse listener

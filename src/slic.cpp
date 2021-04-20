@@ -5,7 +5,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/ximgproc/slic.hpp>
 
 #include <vector>
 
@@ -43,7 +42,10 @@ SLICData
 initialize_slic_data(
     std::string input_image_filename,
     float scale_image_value,
-    bool pad_input
+    bool pad_input,
+    std::string algorithm_string,
+    int region_size,
+    float ruler
 ) {
     cv::Mat input_image = open_image( input_image_filename );
 
@@ -80,20 +82,20 @@ initialize_slic_data(
     //TODO make this better at background detection, not just black backgrounds
     image_data.input_mask = make_background_mask( image_data.input_image );
 
+    // get the algorithm parameters
+    image_data.algorithm = slic_string_to_int( algorithm_string );
+    image_data.region_size = region_size;
+    image_data.ruler = ruler;
+
     return image_data;
 }
 
 // apply segmentation
 void
-process_slic_data(SLICData* image_data, int region_size, float ruler)
+process_slic_data(SLICData* image_data)
 {
     // segment the image by intensity
-    superpixel(
-        image_data,
-        cv::ximgproc::MSLIC,
-        region_size,
-        ruler
-    );
+    superpixel( image_data );
 }
 
 // apply input filters, show, save, and initialize mouse callback
@@ -129,13 +131,15 @@ main(int argc, const char** argv)
     // CLA variables
     std::string input_image_filename;
     std::string output_image_filename;
+    int region_size;
+    float ruler;
+    std::string algorithm_string;
+
     // CLA flags
     float scale_image_value;
     bool blur_output;
     bool equalize_output;
     bool pad_input = false;
-    int region_size;
-    float ruler;
 
     // parse and save command line args
     int parse_result = parse_arguments(
@@ -146,19 +150,24 @@ main(int argc, const char** argv)
         &blur_output,
         &equalize_output,
         &region_size,
-        &ruler
+        &ruler,
+        &algorithm_string
     );
     if (parse_result != 1) return parse_result;
+
 
     // open the image with given options
     SLICData image_data = initialize_slic_data(
         input_image_filename,
         scale_image_value,
-        pad_input
+        pad_input,
+        algorithm_string,
+        region_size,
+        ruler
     );
 
     // apply segmentation
-    process_slic_data( &image_data, region_size, ruler );
+    process_slic_data( &image_data );
 
     // post-process slic data
     post_processing(
