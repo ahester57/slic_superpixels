@@ -34,7 +34,7 @@ mouse_callback_draw_zeros(int event, int x, int y, int d, void* userdata)
             draw_on_original( image_data );
 
             // show marked_up_image
-            cv::imshow( image_data->window_name, image_data->input_image );
+            cv::imshow( image_data->window_name, image_data->marked_up_image );
             break;
 
     // LEFT MOUSE BUTTON
@@ -54,7 +54,7 @@ mouse_callback_draw_zeros(int event, int x, int y, int d, void* userdata)
             std::cout << "Marker Value:\t\t" << marker_value << std::endl;
 #endif
             // check marker exists
-            if (marker_value < 0 || marker_value > image_data->num_superpixels) {
+            if (marker_value < 0 || marker_value > image_data->num_superpixels-1) {
 #if DEBUG
                 std::cout << "Marker Out of Range." << std::endl;
 #endif
@@ -71,10 +71,18 @@ mouse_callback_draw_zeros(int event, int x, int y, int d, void* userdata)
             cv::imshow( image_data->window_name, image_data->marked_up_image );
 
             // save marked_up_image
+            char metadata[50];
+            std::sprintf( metadata, "regions/out_a_%d_s_%d_r_%f_c_%d_m_%d.png",
+                image_data->algorithm,
+                image_data->region_size,
+                image_data->ruler,
+                image_data->connectivity,
+                marker_value
+            );
             write_img_to_file(
                 image_data->marked_up_image,
                 "./out",
-                "regions/out_" + std::to_string(marker_value) + ".png"
+                metadata
             );
             break;
 

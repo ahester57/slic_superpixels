@@ -51,7 +51,7 @@ superpixel(SLICData* image_data)
     blurred_image.release();
 
     // generate the segments
-    superpixels.get()->iterate(10);
+    superpixels.get()->iterate(15);
     // level of connectivity
     superpixels.get()->enforceLabelConnectivity( image_data->connectivity );
     // label contours
@@ -67,7 +67,7 @@ superpixel(SLICData* image_data)
     std::printf( "\nSuperpixel Time Elapsed: %f (ms)\n", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
 
     char metadata[50];
-    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.jpg",
+    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.png",
         image_data->algorithm,
         image_data->region_size,
         image_data->ruler,
@@ -112,7 +112,7 @@ select_region(SLICData* image_data, int marker_value)
     image_data->marked_up_image = cv::Mat::zeros( image_data->input_image.size(), image_data->input_image.type() );
 
     // draw original map back on
-    draw_on_original( image_data );
+    draw_on_original( image_data, marker_value );
 
     // highlight selected region
     // draw_in_roi( image_data, marker_value );
@@ -132,9 +132,6 @@ select_region(SLICData* image_data, int marker_value)
 
     // double size of rect of roi
     // bounding_rect = center_and_double_rect( bounding_rect, image_data->marked_up_image.size() );
-
-    // place enlarged roi in marked up image
-    // image_data->marked_up_image = paint_region_over_map( image_data, bounding_rect );
 
 }
 
@@ -182,7 +179,7 @@ paint_map_atop_region(SLICData* image_data, int marker_value, cv::Mat drawn_cont
 
 // draw original states back onto marked_up_image
 void
-draw_on_original(SLICData* image_data)
+draw_on_original(SLICData* image_data, int marker_value)
 {
     // create single channel mask
     cv::Mat mask_8u;
@@ -193,11 +190,14 @@ draw_on_original(SLICData* image_data)
     {
         for (int j = 0; j < image_data->markers.cols; j++)
         {
-            // skip if not in mask
-            if (mask_8u.at<uchar>( i, j ) == (uchar) 0) {
+            // skip if not in mask (draw borders)
+            if (mask_8u.at<uchar>( i, j ) != (uchar) 0) {
                 continue;
             }
             int pixel = image_data->markers.at<int>( i, j );
+            if (marker_value > -1 && pixel != marker_value) {
+                continue;
+            }
             if (pixel >= 0 && pixel <= static_cast<int>(image_data->num_superpixels)) {
                 image_data->marked_up_image.at<cv::Vec3b>( i, j ) = image_data->input_image.at<cv::Vec3b>( i, j );
             }
