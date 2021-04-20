@@ -4,16 +4,10 @@ SRCDIR=src
 OBJDIR=obj
 TARGETDIR=bin
 
-# Uncomment following line to include opencv video support
-# VIDEO := 1
-
 # OpenCV directories
 IOPENCV=T:/dev/opencv/include
 LOPENCV=T:/dev/opencv/x64/mingw/bin
 OPENCV_LIBS= -llibopencv_world452# -llibopencv_highgui452 -llibopencv_imgcodecs452 -llibopencv_imgproc452
-ifdef VIDEO
-	OPENCV_LIBS += -llibopencv_video452
-endif
 OPENCV_CFLAGS = -I $(IOPENCV) -L $(LOPENCV) $(OPENCV_LIBS)
 
 # Compiler options

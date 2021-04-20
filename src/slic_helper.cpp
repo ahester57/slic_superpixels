@@ -39,6 +39,8 @@ superpixel(SLICData* image_data)
     // blur
     cv::Mat blurred_image;
     cv::GaussianBlur( image_data->input_image, blurred_image, cv::Size( 3, 3 ), 0.5f );
+    // convert to CieLAB
+    cv::cvtColor( blurred_image, blurred_image, cv::COLOR_BGR2Lab );
 
     cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
     superpixels = cv::ximgproc::createSuperpixelSLIC(
