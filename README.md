@@ -39,8 +39,8 @@ Usage: slic.exe [params] input_image output_image
                 Show Help Message
         -r, --ruler (value:10.f)
                 Chooses the enforcement of superpixel smoothness
-        -s, --size (value:10)
-                Chooses an average superpixel size measured in pixels     
+        --region_size, -s (value:10)
+                Chooses an average superpixel size measured in pixels
         --sc, --scale (value:1.f)
                 Scale Input Image Size using Affine Transform
 

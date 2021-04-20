@@ -14,7 +14,9 @@ int parse_arguments(
     std::string* output_image_filename,
     float* scale_image_value,
     bool* blur_output,
-    bool* equalize_output
+    bool* equalize_output,
+    int* region_size,
+    float* ruler
 );
 
 #endif

@@ -16,7 +16,9 @@ parse_arguments(
     std::string* output_image_filename,
     float* scale_image_value,
     bool* blur_output,
-    bool* equalize_output
+    bool* equalize_output,
+    int* region_size,
+    float* ruler
 ) {
     cv::String keys =
         "{@input_image    |<none>| Input Image}"
@@ -27,7 +29,7 @@ parse_arguments(
         "{blur b          |      | Blur Output Image}"
         // "{hsv_plane p     |2     | HSV Plane to Use: 0 = H, 1 = S, 2 = V}"
         "{algorithm a     |SLIC  | Name of SLIC algorithm variant\n\t\t\tSLIC segments image using a desired region size\n\t\t\tSLICO optimizes using an adaptive compactness factor\n\t\t\tMSLIC optimizes using manifold methods giving more context-sensitive superpixels}"
-        "{size s          |10    | Chooses an average superpixel size measured in pixels}"
+        "{region_size s   |10    | Chooses an average superpixel size measured in pixels}"
         "{ruler r         |10.f  | Chooses the enforcement of superpixel smoothness}"
         "{help h          |      | Show Help Message}";
 
@@ -84,21 +86,21 @@ parse_arguments(
         return -1;
     }
 
-    // try {
-    //     *hsv_plane = (float) parser.get<int>("p");
-    //     assert( *hsv_plane >= 0 && *hsv_plane <= 2 );
-    // } catch (...) {
-    //     std::cerr << "Failed to parse hsv_plane argument!:" << std::endl;
-    //     return -1;
-    // }
+    try {
+        *region_size = parser.get<int>("s");
+        assert( *region_size >= 0 && *region_size <= 400 );
+    } catch (...) {
+        std::cerr << "Failed to parse region_size argument!:" << std::endl;
+        return -1;
+    }
 
-    // try {
-    //     *grayscale = parser.has("g");
-    //     assert( *grayscale >= 0 && *grayscale <= 2 );
-    // } catch (...) {
-    //     std::cerr << "Failed to parse grayscale argument!:" << std::endl;
-    //     return -1;
-    // }
+    try {
+        *ruler = parser.get<float>("r");
+        assert( *ruler >= 0.f && *ruler <= 100.f );
+    } catch (...) {
+        std::cerr << "Failed to parse ruler argument!:" << std::endl;
+        return -1;
+    }
 
     std::cout << std::endl << "Shortcuts:" << std::endl << "\tq\t- quit" << std::endl << std::endl;
 

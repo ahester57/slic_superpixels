@@ -88,13 +88,6 @@ process_slic_data(SLICData* image_data)
 {
     // segment the image by intensity
     segment( image_data, 2 );
-
-    // replace the input_image with output from above segmentation
-    image_data->input_image = cv::Mat::zeros( image_data->input_image.size(), image_data->input_image.type() );
-    image_data->marked_up_image.copyTo( image_data->input_image );
-
-    // segment again on saturation
-    segment( image_data, 1 );
 }
 
 // apply input filters, show, save, and initialize mouse callback
@@ -135,6 +128,8 @@ main(int argc, const char** argv)
     bool blur_output;
     bool equalize_output;
     bool pad_input = false;
+    int region_size;
+    float ruler;
 
     // parse and save command line args
     int parse_result = parse_arguments(
@@ -143,7 +138,9 @@ main(int argc, const char** argv)
         &output_image_filename,
         &scale_image_value,
         &blur_output,
-        &equalize_output
+        &equalize_output,
+        &region_size,
+        &ruler
     );
     if (parse_result != 1) return parse_result;
 
