@@ -39,7 +39,7 @@ wait_key()
 
 // initialize input data
 SLICData
-initialize_slic_data(
+preprocess_slic(
     std::string input_image_filename,
     float scale_image_value,
     bool pad_input,
@@ -94,7 +94,7 @@ initialize_slic_data(
 
 // apply segmentation
 void
-process_slic_data(SLICData* image_data)
+process_slic(SLICData* image_data)
 {
     // segment the image by intensity
     superpixel( image_data );
@@ -103,7 +103,7 @@ process_slic_data(SLICData* image_data)
 
 // apply input filters, show, save, and initialize mouse callback
 void
-post_processing(
+postprocess_slic(
     SLICData* image_data,
     bool blur_output,
     bool equalize_output,
@@ -162,7 +162,7 @@ main(int argc, const char** argv)
 
 
     // open the image with given options
-    SLICData image_data = initialize_slic_data(
+    SLICData image_data = preprocess_slic(
         input_image_filename,
         scale_image_value,
         pad_input,
@@ -173,10 +173,10 @@ main(int argc, const char** argv)
     );
 
     // apply segmentation
-    process_slic_data( &image_data );
+    process_slic( &image_data );
 
     // post-process slic data
-    post_processing(
+    postprocess_slic(
         &image_data,
         blur_output,
         equalize_output,

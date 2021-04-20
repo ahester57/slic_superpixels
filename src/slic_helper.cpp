@@ -49,10 +49,11 @@ superpixel(SLICData* image_data)
         image_data->region_size,
         image_data->ruler
     );
+    cv::cvtColor( blurred_image, image_data->input_image, cv::COLOR_Lab2BGR );
     blurred_image.release();
 
     // generate the segments
-    superpixels.get()->iterate(5);
+    superpixels.get()->iterate(7);
     // level of connectivity
     superpixels.get()->enforceLabelConnectivity( image_data->connectivity );
     // label contours
