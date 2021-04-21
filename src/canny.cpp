@@ -19,7 +19,7 @@ draw_canny_contours(cv::Mat image)
     cv::GaussianBlur( image, canny_output, cv::Size( 3, 3 ), 0.5f );
 
     // compute canny edges
-    cv::Canny( canny_output, canny_output, 75, 200 );
+    cv::Canny( canny_output, canny_output, 25, 65 );
 
     // find the contours to draw
     std::vector<std::vector<cv::Point>> contours;

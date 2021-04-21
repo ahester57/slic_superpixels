@@ -13,10 +13,10 @@ parse_arguments(
     int argc,
     const char** argv,
     std::string* input_image_filename,
-    std::string* output_image_filename,
     float* scale_image_value,
     bool* blur_output,
     bool* equalize_output,
+    bool* sharpen_output,
     int* region_size,
     float* ruler,
     std::string* algorithm,
@@ -24,11 +24,11 @@ parse_arguments(
 ) {
     cv::String keys =
         "{@input_image    |<none>| Input Image}"
-        "{@output_image   |<none>| Output Image}"
         // "{grayscale g     |      | Read Input As Grayscale}"
         "{scale sc        |1.f   | Scale Input Image Size using Affine Transform}"
-        // "{equalize e      |      | Equalize Output Image}"
-        // "{blur b          |      | Blur Output Image}"
+        "{equalize e      |      | Equalize Output Image}"
+        "{blur b          |      | Blur Output Image}"
+        "{sharpen sh      |      | Sharpen Output Image}"
         "{algorithm a     |SLIC  | Name of SLIC algorithm variant\n\t\t\tSLIC segments image using a desired region size\n\t\t\tSLICO optimizes using an adaptive compactness factor\n\t\t\tMSLIC optimizes using manifold methods giving more context-sensitive superpixels}"
         "{region_size s   |10    | Chooses an average superpixel size measured in pixels}"
         "{ruler r         |10.f  | Chooses the enforcement of superpixel smoothness}"
@@ -58,16 +58,6 @@ parse_arguments(
     }
 
     try {
-        *output_image_filename = (std::string) parser.get<std::string>(1).c_str();
-        if (output_image_filename->size() == 0) {
-            *output_image_filename = "output_" + *input_image_filename;
-        }
-    } catch (...) {
-        std::cerr << "Failed to parse templatefile argument!:" << std::endl;
-        return -1;
-    }
-
-    try {
         *scale_image_value = (float) parser.get<float>("sc");
         assert( *scale_image_value > 0.f && *scale_image_value < 10.f );
     } catch (...) {
@@ -75,19 +65,26 @@ parse_arguments(
         return -1;
     }
 
-    // try {
-    //     *blur_output = parser.has("b");
-    // } catch (...) {
-    //     std::cerr << "Failed to parse blur argument!:" << std::endl;
-    //     return -1;
-    // }
+    try {
+        *blur_output = parser.has("b");
+    } catch (...) {
+        std::cerr << "Failed to parse blur argument!:" << std::endl;
+        return -1;
+    }
 
-    // try {
-    //     *equalize_output = parser.has("e");
-    // } catch (...) {
-    //     std::cerr << "Failed to parse equalize argument!:" << std::endl;
-    //     return -1;
-    // }
+    try {
+        *equalize_output = parser.has("e");
+    } catch (...) {
+        std::cerr << "Failed to parse equalize argument!:" << std::endl;
+        return -1;
+    }
+
+    try {
+        *sharpen_output = parser.has("sh");
+    } catch (...) {
+        std::cerr << "Failed to parse sharpen argument!:" << std::endl;
+        return -1;
+    }
 
     try {
         *region_size = parser.get<int>("s");

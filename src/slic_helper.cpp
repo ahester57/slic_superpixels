@@ -193,7 +193,7 @@ draw_on_original(SLICData* image_data, int marker_value)
         for (int j = 0; j < image_data->markers.cols; j++)
         {
             // skip if not in mask (draw borders)
-            if (mask_8u.at<uchar>( i, j ) != (uchar) 0) {
+            if (mask_8u.at<uchar>( i, j ) == (uchar) 0) {
                 continue;
             }
             int pixel = image_data->markers.at<int>( i, j );

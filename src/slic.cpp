@@ -50,16 +50,16 @@ preprocess_slic(
 ) {
     cv::Mat input_image = open_image( input_image_filename );
 
+    // scale the input size if given 's' flag
+    if (scale_image_value != 1.f) {
+        input_image = resize_affine( input_image, scale_image_value );
+    }
+
     // crop if odd resolution
     input_image = input_image(
         cv::Rect( 0, 0, input_image.cols & -2, input_image.rows & -2 )
     );
-
-    // scale the input size if given 's' flag
-    if (scale_image_value != 1.f) {
-        input_image = resize_affine( input_image, scale_image_value );
-        std::cout << "Scaled Image size is:\t\t" << input_image.cols << "x" << input_image.rows << std::endl;
-    }
+    std::cout << "Scaled Image size is:\t\t" << input_image.cols << "x" << input_image.rows << std::endl;
 
     // pad the input image if given flag
     if (pad_input) {
@@ -98,7 +98,10 @@ process_slic(SLICData* image_data)
 {
     // segment the image by intensity
     superpixel( image_data );
-    image_data->input_mask.copyTo( image_data->marked_up_image );
+    // zero-out region of interest
+    image_data->marked_up_image = cv::Mat::zeros( image_data->input_image.size(), image_data->input_image.type() );
+    // draw original map back on
+    draw_on_original( image_data );
 }
 
 // apply input filters, show, save, and initialize mouse callback
@@ -107,11 +110,18 @@ postprocess_slic(
     SLICData* image_data,
     bool blur_output,
     bool equalize_output,
-    std::string output_image_filename
+    bool sharpen_output
 ) {
     // blur the output if given 'b' flag
     if (blur_output) {
-        cv::medianBlur( image_data->marked_up_image, image_data->marked_up_image, 3 );
+        cv::GaussianBlur( image_data->marked_up_image, image_data->marked_up_image, cv::Size( 3, 3 ), 1.5f );
+    }
+
+    if (sharpen_output) {
+        cv::Mat tmp;
+        cv::GaussianBlur( image_data->marked_up_image, tmp, cv::Size( 0, 0 ), 3 );
+        cv::addWeighted( image_data->marked_up_image, 1.42, tmp, -0.42, 0, image_data->marked_up_image );
+        tmp.release();
     }
 
     // equalize the output if given 'e' flag
@@ -119,8 +129,16 @@ postprocess_slic(
         equalize_image( &image_data->marked_up_image );
     }
 
+    char metadata[50];
+    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.png",
+        image_data->algorithm,
+        image_data->region_size,
+        image_data->ruler,
+        image_data->connectivity
+    );
+    std::printf( "%s\n", metadata );
     cv::imshow( image_data->window_name, image_data->marked_up_image );
-    write_img_to_file( image_data->marked_up_image, "./out", output_image_filename );
+    write_img_to_file( image_data->marked_up_image, "./out/slic_output", metadata );
 
     // initialize the mouse callback
     init_callback( image_data );
@@ -133,7 +151,6 @@ main(int argc, const char** argv)
 {
     // CLA variables
     std::string input_image_filename;
-    std::string output_image_filename;
     int region_size = 10;
     float ruler = 10.f;
     std::string algorithm_string = "SLIC";
@@ -143,16 +160,17 @@ main(int argc, const char** argv)
     float scale_image_value = 1.f;
     bool blur_output = false;
     bool equalize_output = false;
+    bool sharpen_output = false;
     bool pad_input = false;
 
     // parse and save command line args
     int parse_result = parse_arguments(
         argc, argv,
         &input_image_filename,
-        &output_image_filename,
         &scale_image_value,
         &blur_output,
         &equalize_output,
+        &sharpen_output,
         &region_size,
         &ruler,
         &algorithm_string,
@@ -180,7 +198,7 @@ main(int argc, const char** argv)
         &image_data,
         blur_output,
         equalize_output,
-        output_image_filename
+        sharpen_output
     );
 
     // 'event loop' for keypresses
