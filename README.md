@@ -24,28 +24,34 @@ parameters of the createSuperpixelSLIC function to compute the superpixels.
 #### Usage
 
 ```
-Usage: slic.exe [params] input_image output_image
+Usage: slic.exe [params] template_image target_image 
 
-        -a, --algorithm (value:SLIC)
+        -a, --algorithm (value:MSLIC)
                 Name of SLIC algorithm variant
-                        SLIC segments image using a desired region size
-                        SLICO optimizes using an adaptive compactness factor
-                        MSLIC optimizes using manifold methods giving more context-sensitive superpixels
-        -c, --connectivity (value:25)
+                         - SLIC segments image using a desired region size
+                         - SLICO optimizes using an adaptive compactness factor      
+                         - MSLIC optimizes using manifold methods giving more context-sensitive superpixels
+        -b, --blur (value:true)
+                Output Image - Blur
+        -c, --connectivity (value:99)
                 The minimum element size in percents that should be absorbed into a bigger superpixel
+        -e, --equalize (value:true)
+                Output Image - Equalize
         -h, --help (value:true)
                 Show Help Message
-        -r, --ruler (value:10.f)
+        -r, --ruler (value:10)
                 Chooses the enforcement of superpixel smoothness
-        --region_size, -s (value:10)
+        --region_size, -s (value:8)
                 Chooses an average superpixel size measured in pixels
-        --sc, --scale (value:1.f)
-                Scale Input Image Size using Affine Transform
+        --sc, --scale (value:1.6)
+                Scale input image size using Affine Transform
+        --sh, --sharpen (value:true)
+                Output Image - Sharpen
 
-        input_image (value:<none>)
-                Input Image
-        output_image (value:<none>)
-                Output Image
+        template_image (value:images/tiger.jpg)
+                Template image. Provides theme.
+        target_image
+                Target image. Provides structure. Defaults to template image.
 
 ```
 ----

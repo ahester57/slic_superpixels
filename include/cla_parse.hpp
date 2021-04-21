@@ -10,7 +10,8 @@
 int parse_arguments(
     int argc,
     const char** argv,
-    std::string* input_image_filename,
+    std::string* template_image_filename,
+    std::string* target_image_filename,
     float* scale_image_value,
     bool* blur_output,
     bool* equalize_output,

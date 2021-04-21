@@ -12,7 +12,8 @@ int
 parse_arguments(
     int argc,
     const char** argv,
-    std::string* input_image_filename,
+    std::string* template_image_filename,
+    std::string* target_image_filename,
     float* scale_image_value,
     bool* blur_output,
     bool* equalize_output,
@@ -23,13 +24,14 @@ parse_arguments(
     int* connectivity
 ) {
     cv::String keys =
-        "{@input_image    |<none>| Input Image}"
+        "{@template_image |      | Template image. Provides theme.}"
+        "{@target_image   |      | Target image. Provides structure. Defaults to template image.}"
         // "{grayscale g     |      | Read Input As Grayscale}"
-        "{scale sc        |1.f   | Scale Input Image Size using Affine Transform}"
-        "{equalize e      |      | Equalize Output Image}"
-        "{blur b          |      | Blur Output Image}"
-        "{sharpen sh      |      | Sharpen Output Image}"
-        "{algorithm a     |SLIC  | Name of SLIC algorithm variant\n\t\t\tSLIC segments image using a desired region size\n\t\t\tSLICO optimizes using an adaptive compactness factor\n\t\t\tMSLIC optimizes using manifold methods giving more context-sensitive superpixels}"
+        "{scale sc        |1.f   | Scale input image size using Affine Transform}"
+        "{equalize e      |      | Output Image - Equalize}"
+        "{blur b          |      | Output Image - Blur}"
+        "{sharpen sh      |      | Output Image - Sharpen}"
+        "{algorithm a     |SLIC  | Name of SLIC algorithm variant\n\t\t\t - SLIC segments image using a desired region size\n\t\t\t - SLICO optimizes using an adaptive compactness factor\n\t\t\t - MSLIC optimizes using manifold methods giving more context-sensitive superpixels}"
         "{region_size s   |10    | Chooses an average superpixel size measured in pixels}"
         "{ruler r         |10.f  | Chooses the enforcement of superpixel smoothness}"
         "{connectivity c  |25    | The minimum element size in percents that should be absorbed into a bigger superpixel}"
@@ -50,10 +52,21 @@ parse_arguments(
     }
 
     try {
-        *input_image_filename = (std::string) parser.get<std::string>(0).c_str();
-        assert( input_image_filename->size() > 0 );
+        *template_image_filename = (std::string) parser.get<std::string>(0).c_str();
+        assert( template_image_filename->size() > 0 );
     } catch (...) {
-        std::cerr << "Failed to parse imagefile argument!:" << std::endl;
+        std::cerr << "Failed to parse template_image argument!:" << std::endl;
+        return -1;
+    }
+
+    try {
+        *target_image_filename = (std::string) parser.get<std::string>(1).c_str();
+        if (target_image_filename->size() == 0) {
+            *target_image_filename = (std::string) parser.get<std::string>(0).c_str();
+        }
+        assert( target_image_filename->size() > 0 );
+    } catch (...) {
+        std::cerr << "Failed to parse target_image argument!:" << std::endl;
         return -1;
     }
 

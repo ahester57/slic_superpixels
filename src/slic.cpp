@@ -75,6 +75,7 @@ preprocess_slic(
 
     std::string output_window_name = WINDOW_NAME + " Output Image";
 
+    // initialize SLICData object
     SLICData image_data;
     image_data.window_name = output_window_name;
     input_image.copyTo( image_data.input_image );
@@ -150,7 +151,8 @@ int
 main(int argc, const char** argv)
 {
     // CLA variables
-    std::string input_image_filename;
+    std::string template_image_filename;
+    std::string target_image_filename;
     int region_size = 10;
     float ruler = 10.f;
     std::string algorithm_string = "SLIC";
@@ -166,7 +168,8 @@ main(int argc, const char** argv)
     // parse and save command line args
     int parse_result = parse_arguments(
         argc, argv,
-        &input_image_filename,
+        &template_image_filename,
+        &target_image_filename,
         &scale_image_value,
         &blur_output,
         &equalize_output,
@@ -180,8 +183,8 @@ main(int argc, const char** argv)
 
 
     // open the image with given options
-    SLICData image_data = preprocess_slic(
-        input_image_filename,
+    SLICData source_data = preprocess_slic(
+        template_image_filename,
         scale_image_value,
         pad_input,
         algorithm_string,
@@ -191,11 +194,11 @@ main(int argc, const char** argv)
     );
 
     // apply segmentation
-    process_slic( &image_data );
+    process_slic( &source_data );
 
     // post-process slic data
     postprocess_slic(
-        &image_data,
+        &source_data,
         blur_output,
         equalize_output,
         sharpen_output
@@ -206,11 +209,11 @@ main(int argc, const char** argv)
 
     cv::destroyAllWindows();
 
-    image_data.input_image.release();
-    image_data.markers.release();
-    image_data.input_mask.release();
-    image_data.region_of_interest.release();
-    image_data.marked_up_image.release();
+    source_data.input_image.release();
+    source_data.markers.release();
+    source_data.input_mask.release();
+    source_data.region_of_interest.release();
+    source_data.marked_up_image.release();
 
     return 0;
 }
