@@ -36,21 +36,14 @@ superpixel(SLICData* image_data)
     std::clock_t clock_begin, clock_end;
     clock_begin = std::clock();
 #endif
-    // blur
-    cv::Mat blurred_image;
-    cv::GaussianBlur( image_data->input_image, blurred_image, cv::Size( 3, 3 ), 0.5f );
-    // convert to CieLAB
-    cv::cvtColor( blurred_image, blurred_image, cv::COLOR_BGR2Lab );
 
     cv::Ptr<cv::ximgproc::SuperpixelSLIC> superpixels;
     superpixels = cv::ximgproc::createSuperpixelSLIC(
-        blurred_image,
+        image_data->input_image,
         image_data->algorithm,
         image_data->region_size,
         image_data->ruler
     );
-    cv::cvtColor( blurred_image, image_data->input_image, cv::COLOR_Lab2BGR );
-    blurred_image.release();
 
     // generate the segments
     superpixels.get()->iterate(7);

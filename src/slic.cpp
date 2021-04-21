@@ -67,6 +67,12 @@ preprocess_slic(
         std::cout << "Padded Image size is:\t\t" << input_image.cols << "x" << input_image.rows << std::endl;
     }
 
+    // blur
+    cv::GaussianBlur( input_image, input_image, cv::Size( 3, 3 ), 0.5f );
+
+    // convert to CieLAB
+    cv::cvtColor( input_image, input_image, cv::COLOR_BGR2Lab );
+
 #if DEBUG > 1
     cv::imshow( WINDOW_NAME, input_image );
     // 'event loop' for keypresses
@@ -89,6 +95,7 @@ preprocess_slic(
     image_data.region_size = region_size;
     image_data.ruler = ruler;
     image_data.connectivity = connectivity;
+    image_data.num_superpixels = 0;
 
     return image_data;
 }
@@ -99,6 +106,8 @@ process_slic(SLICData* image_data)
 {
     // segment the image by intensity
     superpixel( image_data );
+    // convert back to RGB
+    cv::cvtColor( image_data->input_image, image_data->input_image, cv::COLOR_Lab2BGR );
     // zero-out region of interest
     image_data->marked_up_image = cv::Mat::zeros( image_data->input_image.size(), image_data->input_image.type() );
     // draw original map back on

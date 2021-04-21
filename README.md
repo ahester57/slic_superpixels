@@ -24,12 +24,12 @@ parameters of the createSuperpixelSLIC function to compute the superpixels.
 #### Usage
 
 ```
-Usage: slic.exe [params] template_image target_image 
+Usage: slic.exe [params] template_image target_image
 
         -a, --algorithm (value:MSLIC)
                 Name of SLIC algorithm variant
                          - SLIC segments image using a desired region size
-                         - SLICO optimizes using an adaptive compactness factor      
+                         - SLICO optimizes using an adaptive compactness factor
                          - MSLIC optimizes using manifold methods giving more context-sensitive superpixels
         -b, --blur (value:true)
                 Output Image - Blur
