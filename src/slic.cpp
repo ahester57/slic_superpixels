@@ -124,7 +124,7 @@ postprocess_slic(
 ) {
     // blur the output if given 'b' flag
     if (blur_output) {
-        cv::GaussianBlur( image_data->marked_up_image, image_data->marked_up_image, cv::Size( 3, 3 ), 1.5f );
+        cv::GaussianBlur( image_data->marked_up_image, image_data->marked_up_image, cv::Size( 3, 3 ), 3.5f );
     }
 
     if (sharpen_output) {
@@ -152,7 +152,8 @@ postprocess_slic(
 
     // initialize the mouse callback
     init_callback( image_data );
-
+    init_callback( image_data, "SLIC Label Contours");
+    init_callback( image_data, "SLIC Label Markers" );
 }
 
 

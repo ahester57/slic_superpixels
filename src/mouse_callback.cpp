@@ -96,3 +96,9 @@ init_callback(SLICData* image_data)
 {
     cv::setMouseCallback( image_data->window_name, mouse_callback_draw_zeros, image_data );
 }
+
+void
+init_callback(SLICData* image_data, std::string window_name)
+{
+    cv::setMouseCallback( window_name, mouse_callback_draw_zeros, image_data );
+}

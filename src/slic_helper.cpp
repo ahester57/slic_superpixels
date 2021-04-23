@@ -70,11 +70,16 @@ superpixel(SLICData* image_data)
     );
     std::printf( "%s\n", metadata );
 
-    cv::Mat labels;
-    image_data->markers.convertTo( labels, CV_32FC3, (float)1/image_data->num_superpixels );
-    cv::imshow( "SLIC Label Markers", labels );
-    write_img_to_file( image_data->markers, "./out/slic_markers", metadata );
-    labels.release();
+    // normalize markers for output (won't be recoverable, but looks cool)
+    cv::Mat markers;
+    cv::normalize( image_data->markers, markers, 0, 255, cv::NORM_MINMAX );
+    markers.convertTo( markers, CV_8U );
+
+    // save both
+    cv::imshow( "SLIC Label Markers", markers );
+    write_img_to_file( markers, "./out/slic_markers", metadata );
+    write_img_to_file( image_data->markers, "./out/slic_markers_32S", metadata );
+    markers.release();
 
     cv::imshow( "SLIC Label Contours", image_data->input_mask );
     write_img_to_file( image_data->input_mask, "./out/slic_contours", metadata );
@@ -82,7 +87,7 @@ superpixel(SLICData* image_data)
 #endif
 }
 
-// convert given motion type to enum int
+// convert given slic_string type to enum int
 int
 slic_string_to_int(std::string algorithm_string)
 {
@@ -186,7 +191,7 @@ draw_on_original(SLICData* image_data, int marker_value)
         for (int j = 0; j < image_data->markers.cols; j++)
         {
             // skip if not in mask (draw borders)
-            if (mask_8u.at<uchar>( i, j ) == (uchar) 0) {
+            if (mask_8u.at<uchar>( i, j ) != (uchar) 0) {
                 continue;
             }
             int pixel = image_data->markers.at<int>( i, j );
