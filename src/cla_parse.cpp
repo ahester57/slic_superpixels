@@ -13,7 +13,6 @@ parse_arguments(
     int argc,
     const char** argv,
     std::string* template_image_filename,
-    std::string* target_image_filename,
     float* scale_image_value,
     bool* blur_output,
     bool* equalize_output,
@@ -25,7 +24,6 @@ parse_arguments(
 ) {
     cv::String keys =
         "{@template_image |      | Template image. Provides theme.}"
-        "{@target_image   |      | Target image. Provides structure. Defaults to template image.}"
         // "{grayscale g     |      | Read Input As Grayscale}"
         "{scale sc        |1.f   | Scale input image size using Affine Transform}"
         "{equalize e      |      | Output Image - Equalize}"
@@ -56,17 +54,6 @@ parse_arguments(
         assert( template_image_filename->size() > 0 );
     } catch (...) {
         std::cerr << "Failed to parse template_image argument!:" << std::endl;
-        return -1;
-    }
-
-    try {
-        *target_image_filename = (std::string) parser.get<std::string>(1).c_str();
-        if (target_image_filename->size() == 0) {
-            *target_image_filename = (std::string) parser.get<std::string>(0).c_str();
-        }
-        assert( target_image_filename->size() > 0 );
-    } catch (...) {
-        std::cerr << "Failed to parse target_image argument!:" << std::endl;
         return -1;
     }
 

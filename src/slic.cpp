@@ -1,4 +1,4 @@
-// map_segment.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// slic.cpp : This file contains the 'main' function. Program execution begins and ends there.
 // Austin Hester CS642o apr 2021
 // g++.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0
 
@@ -140,7 +140,7 @@ postprocess_slic(
     }
 
     char metadata[50];
-    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.png",
+    std::sprintf( metadata, "a_%d_s_%d_r_%d_c_%d.png",
         image_data->algorithm,
         image_data->region_size,
         image_data->ruler,
@@ -162,7 +162,6 @@ main(int argc, const char** argv)
 {
     // CLA variables
     std::string template_image_filename;
-    std::string target_image_filename;
     int region_size = 10;
     float ruler = 10.f;
     std::string algorithm_string = "SLIC";
@@ -179,7 +178,6 @@ main(int argc, const char** argv)
     int parse_result = parse_arguments(
         argc, argv,
         &template_image_filename,
-        &target_image_filename,
         &scale_image_value,
         &blur_output,
         &equalize_output,

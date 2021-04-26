@@ -59,10 +59,10 @@ superpixel(SLICData* image_data)
 
 #if DEBUG
     clock_end = std::clock();
-    std::printf( "\nSuperpixel Time Elapsed: %f (ms)\n", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
+    std::printf( "\nSuperpixel Time Elapsed: %d (ms)\n", (float)( clock_end - clock_begin ) / CLOCKS_PER_SEC * 1000 );
 
     char metadata[50];
-    std::sprintf( metadata, "a_%d_s_%d_r_%f_c_%d.png",
+    std::sprintf( metadata, "a_%d_s_%d_r_%d_c_%d.png",
         image_data->algorithm,
         image_data->region_size,
         image_data->ruler,

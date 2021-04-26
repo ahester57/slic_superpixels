@@ -21,7 +21,23 @@ parameters of the createSuperpixelSLIC function to compute the superpixels.
 
 ----
 
-#### Usage
+## Example
+
+Algorithm: `MSLIC`  
+Region Size: `4`  
+Ruler: `40`  
+Connectivity: `4`  
+
+Input Image:
+![Input Image](images/tiger.jpg)
+
+![Contours Image](out_example/slic_contours/a_102_s_4_r_40.000000_c_4.png)
+
+![Output Image](out_example/slic_output/a_102_s_4_r_40.000000_c_4.png)
+
+----
+
+### Usage
 
 ```
 Usage: slic.exe [params] template_image target_image
@@ -48,8 +64,6 @@ Usage: slic.exe [params] template_image target_image
         --sh, --sharpen (value:true)
                 Output Image - Sharpen
 
-        template_image (value:images/tiger.jpg)
-                Template image. Provides theme.
         target_image
                 Target image. Provides structure. Defaults to template image.
 
